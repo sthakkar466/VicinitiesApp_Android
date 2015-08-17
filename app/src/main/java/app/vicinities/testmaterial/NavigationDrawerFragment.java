@@ -13,32 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SlidingDrawer;
 
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
-    public static final String PREF_FILE_NAME = "textpref";
-    public static final String KEY_USER_LEARNED_DRAWER = "user_learned_drawer";
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private View containerView;
 
-    private boolean mUserLearnedDrawer;
-    private boolean mFromSavedInstanceState;
-
     public NavigationDrawerFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mUserLearnedDrawer = Boolean.valueOf(readFromPreferences(getActivity(), KEY_USER_LEARNED_DRAWER, "false"));
-        if(savedInstanceState != null){
-            mFromSavedInstanceState = true;
-        }
     }
 
     @Override
@@ -57,10 +45,6 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                if (!mUserLearnedDrawer){
-                    mUserLearnedDrawer = true;
-                    saveToPreferences(getActivity(), KEY_USER_LEARNED_DRAWER, mUserLearnedDrawer+"");
-                }
                 getActivity().invalidateOptionsMenu();
             }
 
@@ -72,10 +56,6 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             }
         };
 
-        if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
-            mDrawerLayout.openDrawer(containerView);
-        }
-
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerLayout.post(new Runnable() {
             @Override
@@ -83,17 +63,5 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
                 mDrawerToggle.syncState();
             }
         });
-    }
-
-    public static void saveToPreferences(Context context, String preferenceName, String preferenceValue) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(preferenceName, preferenceValue);
-        editor.apply();
-    }
-
-    public static String readFromPreferences(Context context, String preferenceName, String defaultValue) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(preferenceName, defaultValue);
     }
 }
